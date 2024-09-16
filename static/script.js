@@ -62,6 +62,9 @@ function activateTranslation() {
         const translationDisplay = document.getElementById('translationDisplay');
         translationDisplay.textContent = data.transcription;
 
+        // Call the getFeedback function to display feedback based on the transcription
+        getFeedback(data.transcription);
+
         // Show feedback section
         const feedbackSection = document.getElementById('feedbackSection');
         feedbackSection.classList.remove('hidden');
@@ -71,3 +74,28 @@ function activateTranslation() {
         console.error("Error during translation:", error);
     });
 }
+
+function getFeedback(transcription) {
+    const expectedText = "This is the expected correct sentence."; // Example expected text
+
+    fetch('/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcription, expected_text: expectedText })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const feedback = data.feedback;
+        let feedbackContainer = document.getElementById('feedbackContainer');
+        feedbackContainer.innerHTML = '';  // Clear previous feedback
+        feedback.forEach(msg => {
+            let p = document.createElement('p');
+            p.innerText = msg;
+            feedbackContainer.appendChild(p);
+        });
+    })
+    .catch(error => {
+        console.error("Error getting feedback:", error);
+    });
+}
+

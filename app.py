@@ -3,6 +3,11 @@ from google.cloud import speech
 from google.oauth2 import service_account
 import os
 
+import nltk
+import phonetics
+from nltk.corpus import cmudict
+
+
 app = Flask(__name__)
 
 # Initialize Google Cloud client with credentials
@@ -14,6 +19,46 @@ client = speech.SpeechClient(credentials=creds)
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# Ensure NLTK corpora are downloaded
+nltk.download('cmudict')
+
+# Load CMU Pronouncing Dictionary
+d = cmudict.dict()
+
+# Function to get phonemes from text
+def get_phonemes(word):
+    word = word.lower()
+    if word in d:
+        return d[word][0]  # Return the first pronunciation variant
+    else:
+        return phonetics.metaphone(word)  # Use metaphone as fallback
+
+# Function to compare pronunciation
+def compare_pronunciation(user_text, expected_text):
+    user_phonemes = [get_phonemes(word) for word in user_text.split()]
+    expected_phonemes = [get_phonemes(word) for word in expected_text.split()]
+
+    feedback = []
+    for user_word, expected_word, user_phoneme, expected_phoneme in zip(user_text.split(), expected_text.split(), user_phonemes, expected_phonemes):
+        if user_phoneme != expected_phoneme:
+            feedback.append(f"Try pronouncing '{expected_word}' as '{expected_phoneme}' instead of '{user_word}'")
+
+    return feedback
+
+# Example usage within your Flask app
+@app.route('/feedback', methods=['POST'])
+def get_pronunciation_feedback():
+    data = request.get_json()
+    user_transcription = data.get('transcription', '').lower()
+    expected_text = data.get('expected_text', '').lower()
+
+    feedback = compare_pronunciation(user_transcription, expected_text)
+
+    if not feedback:
+        feedback = ["Great job! Your pronunciation was correct."]
+
+    return jsonify({"feedback": feedback})
 
 # Endpoint for receiving audio and translating it
 @app.route('/translate', methods=['POST'])
@@ -46,6 +91,7 @@ def translate_audio():
         transcription += result.alternatives[0].transcript + " "
 
     return jsonify({"transcription": transcription.strip()})
+
 
 if __name__ == '__main__':
     os.makedirs('uploads', exist_ok=True)

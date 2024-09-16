@@ -93,17 +93,6 @@ footer {
     text-shadow: 1px 1px #005bb5;
 }
 
-/* Animations */
-#feedbackSection {
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-#feedbackSection.show {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 0.4s ease-in-out;
-}
 
 /* Hide the feedback section initially */
 .hidden {
@@ -114,7 +103,7 @@ footer {
     display: block;
 }
 
-/* Improved feedback section */
+/* Feedback Section */
 #feedbackSection {
     margin-top: 50px;
     padding: 25px;
@@ -125,8 +114,16 @@ footer {
     width: 60%;
     margin: 0 auto;
     text-align: center;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    opacity: 0;
+    transform: translateY(20px);
     position: relative; /* Ensures badge stays in the section */
+}
+
+/* Show class for #feedbackSection */
+#feedbackSection.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Title styling */
@@ -134,7 +131,7 @@ footer {
     font-size: 2.2em;
     margin-bottom: 20px;
     color: #2c3e50;
-    font-family: 'Poppins', sans-serif; /* Clean, modern font */
+    font-family: 'Poppins', sans-serif;
     letter-spacing: 1px;
     text-transform: uppercase;
 }
@@ -143,13 +140,13 @@ footer {
 #translationDisplay {
     font-size: 1.6em;
     color: #34495e;
-    font-family: 'Roboto', sans-serif; /* Simple, legible font */
+    font-family: 'Roboto', sans-serif;
     background-color: #fff;
     padding: 15px 20px;
     border-radius: 12px;
     box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.05);
     margin-top: 20px;
-    border-left: 5px solid #3498db; /* Accent line for emphasis */
+    border-left: 5px solid #3498db; /* Accent line */
     text-align: left;
     line-height: 1.8;
 }
@@ -171,14 +168,27 @@ footer {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Transition effects for feedback container */
-#feedbackSection {
-    opacity: 0;
-    transform: translateY(20px);
+/* Feedback messages container */
+/* Feedback Section Styling */
+.feedback-section {
+    background-color: #f7f9fc;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    font-family: 'Roboto', sans-serif;
 }
 
-#feedbackSection.show {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 0.4s ease-in-out;
+/* Individual feedback message styling */
+.feedback-section p {
+    font-size: 1.1em;
+    margin: 10px 0;
+    color: #2c3e50;
+    background-color: #ecf1f7;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #3498db;
 }
+
